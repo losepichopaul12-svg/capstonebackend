@@ -4,12 +4,14 @@ import dotenv from "dotenv";
 import cors from "cors";
 import bcrypt from "bcrypt";
 import jsonwebtoken from "jsonwebtoken"
-import users from "./Usersschema.js";
-import Jobs from "./jobschema.js";
-import Employerprofile from "./employerprofileschema.js";
-import Jobseekerprofile from "./jobseekerprofileschema.js";
+import users from "./Model/Usersschema.js";
+import Jobs from "./Model/jobschema.js";
+import Employerprofile from "./Model/employerprofileschema.js";
+import Jobseekerprofile from "./Model/jobseekerprofileschema.js";
 import auth from "./Auth.js";
 import authorize from "./Authorization.js";
+// application api
+import ApplicationAPI from "./Router/ApplicationAPI.js"
 
 
 
@@ -140,7 +142,7 @@ return response.status(201).json({message:"Jobseeker profile details filled succ
   }
 })
 
-// API for fetching filed input data of joobseeker profile to display in the form.
+// API for fetching filed input data of jobseeker profile to display in the form.
 app.post("/fetch-jobseekerprofile", async(request, response)=>{
   console.log("the request from the client is job seeker  profile details", request.body);
     try{
@@ -152,6 +154,15 @@ app.post("/fetch-jobseekerprofile", async(request, response)=>{
         return response.status(400).json({message:"Sorry error occurred refresh again or try to fill form "});
     }
 })
+
+
+
+// job application application api
+
+app.use("/api/1",ApplicationAPI);
+app.use("/api/2",ApplicationAPI);
+
+
 const PORT=8082;
 const DBURL="mongodb+srv://LosepichoPaul:nyFvT4lCu2KgRuOE@cluster0.q8xcghk.mongodb.net/CAPSTONE-DB"
 
