@@ -159,8 +159,9 @@ app.post("/fetch-jobseekerprofile", async(request, response)=>{
 
 // job application application api
 
-app.use("/api/1",ApplicationAPI);
-app.use("/api/2",ApplicationAPI);
+app.use("/api",ApplicationAPI);
+app.use("/Api",ApplicationAPI);
+
 
 
 const PORT=8082;
