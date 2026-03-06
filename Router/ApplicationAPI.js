@@ -1,4 +1,4 @@
-import express, { request } from "express";
+import express from "express";
 const router=express.Router();
 // import application schema
 import Applications from "../Model/applicantschema.js";
@@ -28,6 +28,26 @@ router.get("/getapplicant",async(request,response)=>{
       catch(err){
           return response.status(400).json({message:"Some error occurred"});
       }
-})
+});
+
+
+// API for updating applicant status
+router.put("/update-status/:id", async (request, response) => {
+
+  try {
+
+    const updated = await Applications.findByIdAndUpdate(
+      request.params.id,
+      { status: request.body.status },
+      { new: true }
+    );
+
+   return  response.status(200).json(updated);
+
+  } catch (err) {
+    response.status(400).json({ message: "Status update failed" });
+  }
+
+});
 
 export default router;

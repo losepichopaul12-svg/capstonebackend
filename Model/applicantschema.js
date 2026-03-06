@@ -18,8 +18,13 @@ const  applicantschema =new mongoose.Schema({
     applicantemail:{
         type:String,
         required:true,
-        unique: true
-}
+     
+},
+    status: {
+    type: String,
+    enum: ["Pending", "Shortlisted", "Rejected"],
+    default: "Pending"
+  }
 });
 applicantschema.index({ jobId: 1, applicantemail: 1 }, { unique: true });
 export default mongoose.model("Applications",applicantschema)

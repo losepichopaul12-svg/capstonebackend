@@ -161,6 +161,7 @@ app.post("/fetch-jobseekerprofile", async(request, response)=>{
 
 app.use("/api",ApplicationAPI);
 app.use("/Api",ApplicationAPI);
+app.use("/status",ApplicationAPI);
 
 
 
