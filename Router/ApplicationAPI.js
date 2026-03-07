@@ -2,6 +2,7 @@ import express from "express";
 const router=express.Router();
 // import application schema
 import Applications from "../Model/applicantschema.js";
+import {getMyApplications } from "./Applicationcontroler.js";
 
 // api for sending job application to the database 
 router.post("/sendapplication",async(request,response)=>{
@@ -49,5 +50,8 @@ router.put("/update-status/:id", async (request, response) => {
   }
 
 });
+
+// job applied API
+router.get("/myapplications/:email", getMyApplications);
 
 export default router;

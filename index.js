@@ -10,8 +10,10 @@ import Employerprofile from "./Model/employerprofileschema.js";
 import Jobseekerprofile from "./Model/jobseekerprofileschema.js";
 import auth from "./Auth.js";
 import authorize from "./Authorization.js";
-// application api
+// Application APIs
 import ApplicationAPI from "./Router/ApplicationAPI.js"
+// Admin APIs
+import AdminAPI from "./Router/AdminAPI.js"
 
 
 
@@ -162,6 +164,10 @@ app.post("/fetch-jobseekerprofile", async(request, response)=>{
 app.use("/api",ApplicationAPI);
 app.use("/Api",ApplicationAPI);
 app.use("/status",ApplicationAPI);
+app.use("/application",ApplicationAPI);
+
+// Admin API routes
+app.use("/Api2",AdminAPI)
 
 
 
