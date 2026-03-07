@@ -166,7 +166,7 @@ app.use("/Api",ApplicationAPI);
 app.use("/status",ApplicationAPI);
 app.use("/application",ApplicationAPI);
 
-// Admin API routes
+// Admin API for sending details
 app.post("/admindetails",async(request,response)=>{
    console.log(request.body)
   try{
@@ -178,6 +178,19 @@ console.log(error)
 return response.status(400).json({message:"error occured................. try later to send the details"})
   }
 })
+// API for fetching jobs from the  from the database.
+app.get("/fetch-users", async(request, response)=>{
+  console.log("the request from the backend is")
+    try{
+        const newusers = await users.find();
+        return response.status(200).json({message:"Users list Fetched successfully",data:newusers});
+    }
+    catch(err){
+      console.log(err)
+      return response.status(400).json({message:"Some error occurred"});
+    }
+})
+
 
 
 
