@@ -32,7 +32,11 @@ const Usersschema=new mongoose.Schema({
     },
 resetPasswordExpire: {
     type: Date
-    }
+    },
+    status:{
+ type:String,
+ default:"Active"
+}
 },
   {
       timestamps:true,

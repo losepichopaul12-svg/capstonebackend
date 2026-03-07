@@ -191,6 +191,48 @@ app.get("/fetch-users", async(request, response)=>{
     }
 })
 
+// api for  blocking the user by admin
+app.put("/block-user/:id", async (req,res)=>{
+
+  try{
+
+    const blockedUser = await users.findByIdAndUpdate(
+      req.params.id,
+      {status:"Blocked"},
+      {new:true}
+    )
+
+    res.status(200).json({
+      message:"User blocked successfully",
+      data:blockedUser
+    })
+
+  }catch(error){
+
+    res.status(500).json({message:"Error blocking user"})
+
+  }
+
+});
+// api for deleting the user by admin
+app.delete("/delete-user/:id", async (req,res)=>{
+
+  try{
+
+    await users.findByIdAndDelete(req.params.id)
+
+    res.status(200).json({
+      message:"User deleted successfully"
+    })
+
+  }catch(error){
+
+    res.status(500).json({message:"Error deleting user"})
+
+  }
+
+});
+
 
 
 
