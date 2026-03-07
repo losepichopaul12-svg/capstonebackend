@@ -1,4 +1,4 @@
-import express  from "express"
+import express, { request }  from "express"
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -13,7 +13,7 @@ import authorize from "./Authorization.js";
 // Application APIs
 import ApplicationAPI from "./Router/ApplicationAPI.js"
 // Admin APIs
-import AdminAPI from "./Router/AdminAPI.js"
+import Adminprofile from "./Model/Adminprofileschema.js"
 
 
 
@@ -167,7 +167,17 @@ app.use("/status",ApplicationAPI);
 app.use("/application",ApplicationAPI);
 
 // Admin API routes
-app.use("/Api2",AdminAPI)
+app.post("/admindetails",async(request,response)=>{
+   console.log(request.body)
+  try{
+    const newdetails= await Adminprofile.create(request.body);
+    return response.status(200).json({message:"Admin profile created successfully" ,data:newdetails})
+  }
+  catch(error){
+console.log(error)
+return response.status(400).json({message:"error occured................. try later to send the details"})
+  }
+})
 
 
 
