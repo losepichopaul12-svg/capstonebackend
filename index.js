@@ -189,7 +189,20 @@ app.get("/fetch-users", async(request, response)=>{
       console.log(err)
       return response.status(400).json({message:"Some error occurred"});
     }
-})
+});
+
+// API for deleting job that does not meet all requirement by admin
+app.delete("/delete-job/:id", async (req,res)=>{
+
+  try{
+    await Jobs.findByIdAndDelete(req.params.id)
+    res.status(200).json({message:"job deleted successfully"})
+
+  }catch(error){
+ res.status(500).json({message:"Error deleting job"})
+}
+
+});
 
 // api for  blocking the user by admin
 app.put("/block-user/:id", async (req,res)=>{
@@ -198,21 +211,13 @@ app.put("/block-user/:id", async (req,res)=>{
 
     const blockedUser = await users.findByIdAndUpdate(
       req.params.id,
-      {status:"Blocked"},
-      {new:true}
-    )
+      {status:"Blocked"},{new:true});
 
-    res.status(200).json({
-      message:"User blocked successfully",
-      data:blockedUser
-    })
+    res.status(200).json({message:"User blocked successfully",data:blockedUser})
 
   }catch(error){
-
-    res.status(500).json({message:"Error blocking user"})
-
+res.status(500).json({message:"Error blocking user"});
   }
-
 });
 
 
@@ -220,19 +225,11 @@ app.put("/block-user/:id", async (req,res)=>{
 app.delete("/delete-user/:id", async (req,res)=>{
 
   try{
-
     await users.findByIdAndDelete(req.params.id)
-
-    res.status(200).json({
-      message:"User deleted successfully"
-    })
-
+ res.status(200).json({ message:"User deleted successfully"});
   }catch(error){
-
-    res.status(500).json({message:"Error deleting user"})
-
-  }
-
+ res.status(500).json({message:"Error deleting user"})
+}
 });
 
 
@@ -250,23 +247,17 @@ const user = await users.findOne({
 console.log("User found:", user)
 
 if(!user){
-return res.status(404).json({
-message:"User with this email does not exist"
-})
+return res.status(404).json({message:"User with this email does not exist"})
 }
 
-return res.json({
-message:"User found",
-userId:user._id
-})
+return res.json({message:"User found",userId:user._id
+});
 
 }catch(error){
 
 console.log(error)
 
-res.status(500).json({
-message:"Server error"
-})
+res.status(500).json({message:"Server error"})
 
 }
 
@@ -285,15 +276,11 @@ req.params.id,
 {password:hashedPassword}
 )
 
-res.json({
-message:"Password updated successfully"
-})
+res.json({message:"Password updated successfully"})
 
 }catch(error){
 
-res.status(500).json({
-message:"Error resetting password"
-})
+res.status(500).json({message:"Error resetting password"})
 
 }
 
