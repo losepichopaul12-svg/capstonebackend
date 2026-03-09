@@ -7,10 +7,9 @@ import Applications from "../Model/applicantschema.js";
 
     const email = request.params.email;
 
-    const applications = await Applications.find({
-      applicantemail: email
-    });
-
+   const applications = await Applications.find({
+  applicantemail: email
+}).populate("jobId");
     response.status(200).json(applications);
 
   } catch (error) {

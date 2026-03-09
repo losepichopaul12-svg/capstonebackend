@@ -32,7 +32,7 @@ app.post("/usersdetail",async(request,response)=>{
       console.log("the hashed password is",hashedpassword);
    const newuser={
    name:request.body.name,
-   email:request.body.email,
+   email:request.body.email.toLowerCase(),
    password:hashedpassword,
    role:request.body.role,
    gender:request.body.gender,
@@ -51,7 +51,7 @@ const saveduser=await users.create(newuser);
 // Login API
 app.post("/login",async (request,response)=>{
   console.log("the login request is:",request.body.email);
-  const saveduser= await users.findOne({email:request.body.email});
+  const saveduser= await users.findOne({email:request.body.email.toLowerCase()});
   console.log("The Fetched user from database is:",saveduser.role);
   if(saveduser){
     if( await bcrypt.compare (request.body.password,saveduser.password)){
@@ -233,6 +233,67 @@ app.delete("/delete-user/:id", async (req,res)=>{
 
 });
 
+
+// user Forget password API 
+app.post("/forgot-password", async (req,res)=>{
+
+console.log("Email received:", req.body.email)
+
+try{
+
+const user = await users.findOne({
+ email:req.body.email
+})
+
+console.log("User found:", user)
+
+if(!user){
+return res.status(404).json({
+message:"User with this email does not exist"
+})
+}
+
+return res.json({
+message:"User found",
+userId:user._id
+})
+
+}catch(error){
+
+console.log(error)
+
+res.status(500).json({
+message:"Server error"
+})
+
+}
+
+})
+// user Reset Password API
+app.put("/reset-password/:id", async (req,res)=>{
+
+try{
+
+const hashedPassword = await bcrypt.hash(req.body.password,12)
+
+await users.findByIdAndUpdate(
+req.params.id,
+{password:hashedPassword}
+)
+
+res.json({
+message:"Password updated successfully"
+})
+
+}catch(error){
+
+res.status(500).json({
+message:"Error resetting password"
+})
+
+}
+
+})
 
 
 
