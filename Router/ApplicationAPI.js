@@ -9,7 +9,7 @@ router.post("/sendapplication",async(request,response)=>{
     console.log(request.body)
      try{
        const applications= await Applications.create(request.body);
-       return response.status(200).json({message:"job applications  created successfuly" ,data:applications})
+       return response.status(200).json({message:"job application  sent successfuly" ,data:applications})
      }
      catch(error){
    console.log(error)

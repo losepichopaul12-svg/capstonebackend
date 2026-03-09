@@ -97,7 +97,7 @@ app.post("/employerdetail",auth, authorize("Employer"), async(request,response)=
   console.log(request.body);
   try{
     const savedprofile= await Employerprofile.findOneAndUpdate({userid:request.body.id}, request.body,{ upsert: true, new: true})
-return response.status(201).json({message:"Employer profile details update ",data:savedprofile})
+return response.status(201).json({message:"Employer  details update ",data:savedprofile})
     }
   catch(err){
     console.log(err)
@@ -171,7 +171,7 @@ app.post("/admindetails",async(request,response)=>{
    console.log(request.body)
   try{
     const newdetails= await Adminprofile.create(request.body);
-    return response.status(200).json({message:"Admin profile created successfully" ,data:newdetails})
+    return response.status(200).json({message:"Admin profile submitted successfully" ,data:newdetails})
   }
   catch(error){
 console.log(error)
@@ -183,7 +183,7 @@ app.get("/fetch-users", async(request, response)=>{
   console.log("the request from the backend is")
     try{
         const newusers = await users.find();
-        return response.status(200).json({message:"Users list Fetched successfully",data:newusers});
+        return response.status(200).json({message:"job cards list Fetched successfully",data:newusers});
     }
     catch(err){
       console.log(err)
@@ -214,6 +214,8 @@ app.put("/block-user/:id", async (req,res)=>{
   }
 
 });
+
+
 // api for deleting the user by admin
 app.delete("/delete-user/:id", async (req,res)=>{
 
@@ -268,7 +270,9 @@ message:"Server error"
 
 }
 
-})
+});
+
+
 // user Reset Password API
 app.put("/reset-password/:id", async (req,res)=>{
 
@@ -293,7 +297,7 @@ message:"Error resetting password"
 
 }
 
-})
+});
 
 
 
