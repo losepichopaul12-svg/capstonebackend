@@ -83,7 +83,9 @@ return response.status(400).json({message:"error occured................. try la
 app.get("/fetch-jobs", async(request, response)=>{
   console.log("the request from the backend is")
     try{
-        const newjobs = await Jobs.find();
+      const email = request.user.email;
+      console.log("email from token is: ", email);
+        const newjobs = await Jobs.find({Employeremail:email});
         return response.status(200).json({message:"New jobs Fetched successfully",data:newjobs});
     }
     catch(err){
