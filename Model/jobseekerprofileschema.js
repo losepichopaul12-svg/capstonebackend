@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
 const jobseekerprofileschema=new mongoose.Schema({
-  userid:{
-    type:String,
-    required:true,
-    unique:true
-  },
+userid: {
+  type: String,
+  required: true,
+  unique: true
+},
     fullnames:{
         type:String,
         required:false

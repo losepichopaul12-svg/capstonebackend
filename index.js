@@ -7,11 +7,12 @@ import jsonwebtoken from "jsonwebtoken"
 import users from "./Model/Usersschema.js";
 import Jobs from "./Model/jobschema.js";
 import Employerprofile from "./Model/employerprofileschema.js";
-import Jobseekerprofile from "./Model/jobseekerprofileschema.js";
 import auth from "./Auth.js";
 import authorize from "./Authorization.js";
 // Application APIs
-import ApplicationAPI from "./Router/ApplicationAPI.js"
+import ApplicationAPI from "./Router/ApplicationAPI.js";
+// jobseeker API s
+import JobseekerAPI from "./Router/JobseekerAPI.js"
 // Admin APIs
 import Adminprofile from "./Model/Adminprofileschema.js"
 
@@ -46,7 +47,7 @@ const saveduser=await users.create(newuser);
         return response.json({status:"01",message:"An error occureed.......try again later",data:null})
     }
     
-})
+});
 
 // Login API
 app.post("/login",async (request,response)=>{
@@ -65,7 +66,7 @@ app.post("/login",async (request,response)=>{
   }
 })
 
-// New job post Api for employer.
+//API for sending  New job post by  employer.
 app.post("/newpost" , async(request,response)=>{
   console.log(request.body)
   try{
@@ -80,18 +81,31 @@ return response.status(400).json({message:"error occured................. try la
 })
 
 // API for fetching jobs from the  from the database.
-app.get("/fetch-jobs", async(request, response)=>{
+app.get("/fetch-jobs",auth,  async(request, response)=>{
   console.log("the request from the backend is")
     try{
-      const email = request.user.email;
-      console.log("email from token is: ", email);
+      const email = request.user.user.email;
+      console.log("email from token is: ", request.user.user.email);
         const newjobs = await Jobs.find({Employeremail:email});
         return response.status(200).json({message:"New jobs Fetched successfully",data:newjobs});
     }
     catch(err){
         return response.status(400).json({message:"Some error occurred"});
     }
-})
+});
+
+// API for fetching all employers jobs 
+app.get("/fetch-alljobs", async(request, response)=>{
+  console.log("the request from the backend is")
+    try{
+        const alljobs = await Jobs.find();
+        return response.status(200).json({message:"All jobs posted fetched successfully",data:alljobs});
+    }
+    catch(err){
+      console.log(err)
+      return response.status(400).json({message:"Some error occurred"});
+    }
+});
 
 // Employer profile detail quarying  to DB  API
 
@@ -120,46 +134,6 @@ app.get("/fetch-employerprofile", async(request, response)=>{
     }
 })
 
-// API for sending jobseeker profile details
-app.post("/jobseekerprofile",async(request,response)=>{
-  console.log("the request is",request.body)
-  try{
-    let jobseeker = await Jobseekerprofile.findOne({ userid: request.body.id });
-    if (jobseeker) {
-
-      jobseeker = await Jobseekerprofile.findByIdAndUpdate(
-       jobseeker._id,
-        request.body,
-
-  );
-} else {
-  jobseeker = await Jobseekerprofile.create({
-    userid: request.body.id,
-    ...request.body
-  });
-}
-return response.status(201).json({message:"Jobseeker profile details filled successfully",jobseeker})
-  }catch(err){
-    console.log(err);
-    return response.status(400).json({message:"the profile detailed not sent properly"})
-
-  }
-})
-
-// API for fetching filed input data of jobseeker profile to display in the form.
-app.post("/fetch-jobseekerprofile", async(request, response)=>{
-  console.log("the request from the client is job seeker  profile details", request.body);
-    try{
-        const fetchedjobseekerprofile = await Jobseekerprofile.findOne({userid:request.body.id});
-        return response.status(200).json({message:"Joseeker profile fetched successfuly",data:fetchedjobseekerprofile});
-    }
-    catch(err){
-      console.log(err);
-        return response.status(400).json({message:"Sorry error occurred refresh again or try to fill form "});
-    }
-})
-
-
 
 // job application application api
 
@@ -167,6 +141,9 @@ app.use("/api",ApplicationAPI);
 app.use("/Api",ApplicationAPI);
 app.use("/status",ApplicationAPI);
 app.use("/application",ApplicationAPI);
+
+// Jobseeeker API s 
+app.use("/jobseeker",JobseekerAPI)
 
 // Admin API for sending details
 app.post("/admindetails",async(request,response)=>{
@@ -180,7 +157,7 @@ console.log(error)
 return response.status(400).json({message:"error occured................. try later to send the details"})
   }
 })
-// API for fetching jobs from the  from the database.
+// API for fetching users from the  from the database.
 app.get("/fetch-users", async(request, response)=>{
   console.log("the request from the backend is")
     try{
@@ -206,7 +183,9 @@ app.delete("/delete-job/:id", async (req,res)=>{
 
 });
 
-// api for  blocking the user by admin
+
+
+// API  for  blocking the user by admin
 app.put("/block-user/:id", async (req,res)=>{
 
   try{
@@ -236,58 +215,6 @@ app.delete("/delete-user/:id", async (req,res)=>{
 
 
 // user Forget password API 
-app.post("/forgot-password", async (req,res)=>{
-
-console.log("Email received:", req.body.email)
-
-try{
-
-const user = await users.findOne({
- email:req.body.email
-})
-
-console.log("User found:", user)
-
-if(!user){
-return res.status(404).json({message:"User with this email does not exist"})
-}
-
-return res.json({message:"User found",userId:user._id
-});
-
-}catch(error){
-
-console.log(error)
-
-res.status(500).json({message:"Server error"})
-
-}
-
-});
-
-
-// user Reset Password API
-app.put("/reset-password/:id", async (req,res)=>{
-
-try{
-
-const hashedPassword = await bcrypt.hash(req.body.password,12)
-
-await users.findByIdAndUpdate(
-req.params.id,
-{password:hashedPassword}
-)
-
-res.json({message:"Password updated successfully"})
-
-}catch(error){
-
-res.status(500).json({message:"Error resetting password"})
-
-}
-
-});
-
 
 
 const PORT=8082;
