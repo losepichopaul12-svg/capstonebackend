@@ -2,13 +2,22 @@ import express from "express";
 const router=express.Router();
 // import application schema
 import Applications from "../Model/applicantschema.js";
-import {getMyApplications } from "./Applicationcontroler.js";
+import Jobs from "../Model/jobschema.js";
+
 
 // api for sending job application to the database 
 router.post("/sendapplication",async(request,response)=>{
     console.log(request.body)
      try{
-       const applications= await Applications.create(request.body);
+      const job = await Jobs.findById(request.body.jobId);
+        if (!job) {
+      return response.status(404).json({
+        message: "Job not found"
+      });
+    }
+       const applications= await Applications.create({ ...request.body,
+       EmployerId: job.userid,
+      Employeremail: job.Employeremail});
        return response.status(200).json({message:"job application  sent successfuly" ,data:applications})
      }
      catch(error){
@@ -51,7 +60,5 @@ router.put("/update-status/:id", async (request, response) => {
 
 });
 
-// job applied API
-router.get("/myapplications/:email", getMyApplications);
 
 export default router;

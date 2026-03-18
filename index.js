@@ -6,7 +6,6 @@ import bcrypt from "bcrypt";
 import jsonwebtoken from "jsonwebtoken"
 import users from "./Model/Usersschema.js";
 import Jobs from "./Model/jobschema.js";
-import Employerprofile from "./Model/employerprofileschema.js";
 import auth from "./Auth.js";
 import authorize from "./Authorization.js";
 // Application APIs
@@ -69,18 +68,24 @@ app.post("/login",async (request,response)=>{
 })
 
 //API for sending  New job post by  employer.
-app.post("/newpost" , async(request,response)=>{
-  console.log(request.body)
-  try{
-    const jobpost= await Jobs.create(request.body);
-    return response.status(200).json({message:"job data created successfuly" ,data:jobpost})
+app.post("/newpost", async (request, response) => {
+  console.log(request.body);
+
+  try {
+    const jobpost = await Jobs.create({
+      ...request.body,
+      EmployerId: request.body.userid,
+      userid: request.body.userid,   // MUST SAVE THIS
+      Employeremail: request.body.Employeremail
+    });
+
+    return response.status(200).json({message: "job data created successfully",data: jobpost});
+
+  } catch (error) {
+    console.log(error);
+    return response.status(400).json({message: "error occurred... try later to upload the job"});
   }
-  catch(error){
-console.log(error)
-return response.status(400).json({message:"error occured................. try later to upload the job"})
-  }
-  
-})
+});
 
 // API for fetching jobs from the  from the database.
 app.get("/fetch-jobs",auth,  async(request, response)=>{
@@ -118,13 +123,13 @@ app.get("/fetch-alljobs", async(request, response)=>{
 app.use("/api",ApplicationAPI);
 app.use("/Api",ApplicationAPI);
 app.use("/status",ApplicationAPI);
-app.use("/application",ApplicationAPI);
+
 
 // Jobseeeker API s 
 app.use("/jobseeker",JobseekerAPI)
 // Employer API s
 app.use("/employer",EmployerAPI)
-console.log("Employer API loaded");
+
 // Admin API for sending details
 app.post("/admindetails",async(request,response)=>{
    console.log(request.body)

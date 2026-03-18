@@ -7,6 +7,19 @@ const  applicantschema =new mongoose.Schema({
     ref: "Jobs",
     required: true
   },
+  userid: {
+    type: String,
+    required: true,
+  },
+  EmployerId: {
+    type: String,
+    required: true
+  },
+  Employeremail: {
+    type: String,
+    required: true
+  },
+
      Jobtitle:{
         type:String,
         required:true
