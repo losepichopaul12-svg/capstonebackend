@@ -1,29 +1,34 @@
 import mongoose from "mongoose"
 
 const Employerprofileschema= new mongoose.Schema({
+ userid: {
+  type: String,
+  required: true,
+  unique: true
+},
     companyname:{
         type:String,
-        required:true
+        required:false
     },
     companyemail:{
         type:String,
-        required:true
+        required:false
     },
     companyphone:{
         type:String,
-        required:true
+        required:false
     },
    companylocation:{
         type:String,
-        required:true
+        required:false
     },
     companyindustry:{
         type:String,
-        required:true
+        required:false
     },
     companydescription:{
         type:String,
-        required:true
+        required:false
     }
 
 })

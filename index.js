@@ -12,7 +12,9 @@ import authorize from "./Authorization.js";
 // Application APIs
 import ApplicationAPI from "./Router/ApplicationAPI.js";
 // jobseeker API s
-import JobseekerAPI from "./Router/JobseekerAPI.js"
+import JobseekerAPI from "./Router/JobseekerAPI.js";
+// employer API `s 
+import EmployerAPI from "./Router/EmployerAPI.js"
 // Admin APIs
 import Adminprofile from "./Model/Adminprofileschema.js"
 
@@ -107,32 +109,8 @@ app.get("/fetch-alljobs", async(request, response)=>{
     }
 });
 
-// Employer profile detail quarying  to DB  API
 
-app.post("/employerdetail",auth, authorize("Employer"), async(request,response)=>{
-  console.log(request.body);
-  try{
-    const savedprofile= await Employerprofile.findOneAndUpdate({userid:request.body.id}, request.body,{ upsert: true, new: true})
-return response.status(201).json({message:"Employer  details update ",data:savedprofile})
-    }
-  catch(err){
-    console.log(err)
-    return response.status(400).json({message:"Error ...................occured details not captured" })
-  }
-})
 
-// API for fetching employer profile to fill the inputs
-app.get("/fetch-employerprofile", async(request, response)=>{
-  console.log("the request from the backend is employer profile details")
-    try{
-        const fetchedprofile = await Employerprofile.findOne({userid:request.body.id});
-        return response.status(200).json({message:"Employer profile fetched successfuly",data:fetchedprofile});
-    }
-    catch(err){
-      console.log(err);
-        return response.status(400).json({message:"Some error occurred"});
-    }
-})
 
 
 // job application application api
@@ -144,7 +122,9 @@ app.use("/application",ApplicationAPI);
 
 // Jobseeeker API s 
 app.use("/jobseeker",JobseekerAPI)
-
+// Employer API s
+app.use("/employer",EmployerAPI)
+console.log("Employer API loaded");
 // Admin API for sending details
 app.post("/admindetails",async(request,response)=>{
    console.log(request.body)
