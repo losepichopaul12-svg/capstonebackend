@@ -73,10 +73,9 @@ app.post("/newpost", async (request, response) => {
 
   try {
     const jobpost = await Jobs.create({
-      ...request.body,
-      EmployerId: request.body.userid,
-      userid: request.body.userid,   // MUST SAVE THIS
-      Employeremail: request.body.Employeremail
+      ...req.body,
+      userid: req.body.userid,   // employer id
+      Employeremail: req.body.Employeremail
     });
 
     return response.status(200).json({message: "job data created successfully",data: jobpost});

@@ -6,27 +6,45 @@ import Jobs from "../Model/jobschema.js";
 
 
 // api for sending job application to the database 
-router.post("/sendapplication",async(request,response)=>{
-    console.log(request.body)
-     try{
-      const job = await Jobs.findById(request.body.jobId);
-        if (!job) {
-      return response.status(404).json({
-        message: "Job not found"
+router.post("/sendapplication", async (req, res) => {
+  try {
+    console.log("Incoming data:", req.body);
+
+    const job = await Jobs.findById(req.body.jobId);
+
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    const application = await Applications.create({
+      jobId: job._id,
+      Jobtitle: job.Jobtitle,
+      applicantname: req.body.applicantname,
+      applicantemail: req.body.applicantemail,
+      userid: req.body.userid,             // applicant
+      EmployerId: job.userid,              // Employeridfrom job
+      Employeremail: job.Employeremail
+    });
+
+    return res.status(200).json({
+      message: "Application sent successfully",
+      data: application
+    });
+
+  } catch (error) {
+    console.log("FULL ERROR:", error);
+
+    if (error.code === 11000) {
+      return res.status(400).json({
+        message: "You already applied for this job"
       });
     }
-       const applications= await Applications.create({ ...request.body,
-       EmployerId: job.userid,
-      Employeremail: job.Employeremail});
-       return response.status(200).json({message:"job application  sent successfuly" ,data:applications})
-     }
-     catch(error){
-   console.log(error)
-   return response.status(400).json({message:"error occured................. try later to apply  the job"})
-     }
-     
-});
 
+    return res.status(400).json({
+      message: error.message
+    });
+  }
+});
 // API for fetching job applicants from the database
 
 router.get("/getapplicant",async(request,response)=>{
