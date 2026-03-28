@@ -8,15 +8,17 @@ const  applicantschema =new mongoose.Schema({
     required: true
   },
 
-  userid: {   
-    type: String,
-    required: true
-  },
+  userid: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "users",
+  required: true
+},
 
-  EmployerId: {   
-    type: String,
-    required: true
-  },
+  EmployerId: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "users",
+  required: true
+},
 
   Employeremail: {
     type: String,

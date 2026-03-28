@@ -1,8 +1,10 @@
 import express from "express";
+import mongoose from "mongoose";  
 const router=express.Router();
 // import application schema
 import Applications from "../Model/applicantschema.js";
 import Jobs from "../Model/jobschema.js";
+import auth from "../Auth.js";
 
 
 // api for sending job application to the database 
@@ -12,18 +14,23 @@ router.post("/sendapplication", async (req, res) => {
 
     const job = await Jobs.findById(req.body.jobId);
 
-    if (!job) {
+     if (!job) {
       return res.status(404).json({ message: "Job not found" });
     }
 
+    // Ensure job has a valid employer
+    if (!job.userid) {
+      return res.status(400).json({ message: "Cannot apply: Job has no employer assigned" });
+    }
+
     const application = await Applications.create({
-      jobId: job._id,
-      Jobtitle: job.Jobtitle,
-      applicantname: req.body.applicantname,
-      applicantemail: req.body.applicantemail,
-      userid: req.body.userid,             // applicant
-      EmployerId: job.userid,              // Employeridfrom job
-      Employeremail: job.Employeremail
+  jobId: job._id,
+  Jobtitle: job.Jobtitle,
+  applicantname: req.body.applicantname,
+  applicantemail: req.body.applicantemail,
+  userid:new  mongoose.Types.ObjectId(req.body.userid),  
+  EmployerId:new  mongoose.Types.ObjectId(job.userid),   
+   Employeremail: job.Employeremail
     });
 
     return res.status(200).json({
@@ -47,15 +54,24 @@ router.post("/sendapplication", async (req, res) => {
 });
 // API for fetching job applicants from the database
 
-router.get("/getapplicant",async(request,response)=>{
-   console.log("the request from the backend is")
-      try{
-          const newapplicants = await Applications.find();
-          return response.status(200).json({message:"New applicants Fetched successfully",data:newapplicants});
-      }
-      catch(err){
-          return response.status(400).json({message:"Some error occurred"});
-      }
+router.get("/getapplicant", auth, async (request, response) => {
+  try {
+    const employerId = request.user.user.id; 
+
+    const applicants = await Applications.find({
+      EmployerId: employerId
+    });
+
+    return response.status(200).json({
+      message: "Applicants fetched successfully",
+      data: applicants
+    });
+
+  } catch (err) {
+    return response.status(400).json({
+      message: "Some error occurred"
+    });
+  }
 });
 
 

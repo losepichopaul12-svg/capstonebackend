@@ -68,21 +68,21 @@ app.post("/login",async (request,response)=>{
 })
 
 //API for sending  New job post by  employer.
-app.post("/newpost", async (request, response) => {
-  console.log(request.body);
-
+app.post("/newpost", auth, async (request, response) => {
   try {
     const jobpost = await Jobs.create({
-      ...req.body,
-      userid: req.body.userid,   // employer id
-      Employeremail: req.body.Employeremail
+      ...request.body,
+      userid: request.user.user.id
     });
 
-    return response.status(200).json({message: "job data created successfully",data: jobpost});
+    return response.status(200).json({
+      message: "job data created successfully",
+      data: jobpost
+    });
 
   } catch (error) {
     console.log(error);
-    return response.status(400).json({message: "error occurred... try later to upload the job"});
+    return response.status(400).json({message: "error occurred"});
   }
 });
 
