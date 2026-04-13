@@ -202,7 +202,7 @@ app.delete("/delete-user/:id", async (req,res)=>{
 
 
 const PORT=8082;
-const DBURL="mongodb+srv://LosepichoPaul:nyFvT4lCu2KgRuOE@cluster0.q8xcghk.mongodb.net/CAPSTONE-DB"
+const DBURL="mongodb+srv://losepicho:wSrjZSJTqVFTPcDA@cluster0.asalaoy.mongodb.net/PASTROL-HUB-DB"
 
 mongoose.connect(DBURL).then(()=>{
     console.log("Connected to the Database successfully")
